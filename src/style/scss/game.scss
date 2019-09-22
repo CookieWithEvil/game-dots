@@ -1,0 +1,20 @@
+&-field{
+  margin: auto;
+  display: grid;
+  grid-template-columns: 40px 40px 40px 40px 40px;
+  grid-template-rows: 40px 40px 40px 40px 40px;
+  border: 1px solid lightgray;
+  width: fit-content;
+  .cell{
+    border: 1px solid lightgray;
+    &-next{
+      background: #00e871;
+    }
+    &-user{
+      background: #42d8e8;
+    }
+    &-computer{
+      background: #e85a5f;
+    }
+  }
+}
