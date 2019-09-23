@@ -14,6 +14,7 @@ const initialState = {
   gameEnded: false,
   isPlaying: false,
   activeCell: null,
+  notFirstGame: false,
 
   userName: '',
   mode: null,
@@ -25,7 +26,6 @@ const initialState = {
 
 function rootReducer(state = initialState, action) {
   let stateCopy = {...state};
-  console.log('called store', action.type);
   switch (action.type) {
     case 'FILL_CELL': {
       let cellsCopy = [].concat(state.cells);
@@ -46,14 +46,29 @@ function rootReducer(state = initialState, action) {
     }break;
     case 'GAME_OVER': {
       let newWinners = [].concat(stateCopy.winners).concat([{user: (action.winner === 'user') ? state.userName : 'Computer', date: state.date}])
-      console.log('newWinners, state.winners',newWinners, state.winners);
       stateCopy.gameEnded = true;
       stateCopy.activeCell = null;
       stateCopy.winners = newWinners;
+      stateCopy.notFirstGame = true;
+      postWinners(state.userName, state.date)
       return stateCopy;
     }break;
     default: return state;
   }
+}
+
+function postWinners(name, date) {
+  fetch(window.location.href + 'winners', {
+    method: 'POST',
+    headers: {
+      'Accept': 'winner/json',
+      'Content-Type': 'winner/json',
+    },
+    body: JSON.stringify({
+      name: name,
+      date: date,
+    })
+  })
 }
 
 export function fillCell(id, cellType) {

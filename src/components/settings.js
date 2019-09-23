@@ -8,6 +8,10 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+const mapStateToProps = state => {
+  return {notFirstGame: state.notFirstGame};
+}
+
 class ConnectedSettings extends PureComponent{
   constructor(props){
     super(props);
@@ -51,11 +55,11 @@ class ConnectedSettings extends PureComponent{
         </select>
 
         <input type="text" name="name" placeholder="Enter your name" className={`game-wrapper__game-settings_name game-wrapper__game-settings_setting ${this.state.isChangeStyle ? "fill-input" : ""}`} value={this.state.userName} onChange={(event) => this.handleInputChange(event)}/>
-        <button type="submit" className="game-wrapper__game-settings_submit game-wrapper__game-settings_setting">PLAY</button>
+        <button type="submit" className="game-wrapper__game-settings_submit game-wrapper__game-settings_setting">PLAY {this.props.notFirstGame && 'AGAIN'}</button>
       </form>
     );
   }
 }
 
-const Settings = connect(null, mapDispatchToProps)(ConnectedSettings);
+const Settings = connect(mapStateToProps, mapDispatchToProps)(ConnectedSettings);
 export default Settings;

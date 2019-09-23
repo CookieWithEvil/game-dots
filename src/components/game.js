@@ -16,7 +16,7 @@ const mapStateToProps = state => {
   return { gameStarted: state.gameStarted,
            gameEnded: state.gameEnded,
            activeCell: state.activeCell,
-           mode: state.mode,
+           mode: state.mode,           
            cells: state.cells };
 };
 
