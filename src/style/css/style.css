@@ -14,7 +14,7 @@ body {
     border-right: none; }
     .game-wrapper__game-settings {
       width: 90%;
-      margin: 50px auto;
+      margin: 50px auto 40px;
       height: 40px;
       display: flex;
       justify-content: space-around; }
@@ -52,6 +52,12 @@ body {
         color: #fff;
         font-weight: bold;
         border: none; }
+    .game-wrapper__game-message {
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: bold; }
+      .game-wrapper__game-message.element-invisible {
+        visibility: hidden; }
     .game-wrapper__game-field {
       margin: auto;
       display: grid;

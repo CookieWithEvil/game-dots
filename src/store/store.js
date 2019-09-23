@@ -39,13 +39,14 @@ function rootReducer(state = initialState, action) {
     case 'START_GAME': {
       stateCopy.cells = getEmptyCells();
       stateCopy.gameStarted = true;
+      stateCopy.gameEnded = false;
       stateCopy.userName = action.userName;
       stateCopy.date = action.date;
       stateCopy.mode = MODES[action.mode];
       return stateCopy;
     }break;
     case 'GAME_OVER': {
-      let newWinners = [].concat(stateCopy.winners).concat([{user: (action.winner === 'user') ? state.userName : 'Computer', date: state.date}])
+      let newWinners = ([{user: (action.winner === 'user') ? state.userName : 'Computer', date: state.date}]).concat(stateCopy.winners)
       stateCopy.gameEnded = true;
       stateCopy.activeCell = null;
       stateCopy.winners = newWinners;

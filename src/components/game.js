@@ -3,6 +3,7 @@ import uuid from 'uuid';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import Settings from './settings';
+import {CELLS_AMOUNT} from '../constants/constants';
 import {fillCell, gameOver} from '../store/store';
 
 function mapDispatchToProps(dispatch) {
@@ -16,8 +17,10 @@ const mapStateToProps = state => {
   return { gameStarted: state.gameStarted,
            gameEnded: state.gameEnded,
            activeCell: state.activeCell,
-           mode: state.mode,           
-           cells: state.cells };
+           mode: state.mode,
+           winners: state.winners,
+           cells: state.cells,
+          };
 };
 
 class ConnectedGame extends PureComponent{
@@ -42,11 +45,11 @@ class ConnectedGame extends PureComponent{
     const {cells} = this.props;
     let randomId;
     let avaliableCells = cells.filter(cell => cell === 'empty');
-    if(avaliableCells.length === 0){
-      this.determineWinner();
-    }else if(avaliableCells.length > 0){
+
+    this.determineWinner();
+    if(!this.props.gameEnded && avaliableCells.length > 0){
       do{
-        randomId = Math.floor(Math.random() * 25);
+        randomId = Math.floor(Math.random() * CELLS_AMOUNT);
       }while(cells[randomId] !== 'empty');
       this.props.fillCell(randomId, 'next');
       this.computerFill();
@@ -57,22 +60,28 @@ class ConnectedGame extends PureComponent{
     this.cellTimeout = setTimeout(()=> {
       this.props.fillCell(this.props.activeCell, 'computer');
       clearTimeout(this.cellTimeout);
-      this.cellTimeout = setTimeout(this.chooseNextCell, 500);
+      if(!this.props.gameEnded) this.cellTimeout = setTimeout(this.chooseNextCell, 500);
     }, this.props.mode);
   }
 
   determineWinner = () => {
     let userCount = 0, computerCount = 0;
-    for (var i = 0; i < 25; i++) {
+    for (var i = 0; i < CELLS_AMOUNT; i++) {
       if(this.props.cells[i] === 'user'){
         userCount++;
-      }else computerCount++;
+      }else if(this.props.cells[i] === 'computer'){
+        computerCount++;
+      }
     }
-    this.props.gameOver((userCount > computerCount) ? 'user' : 'computer');
+    if(userCount === Math.ceil(CELLS_AMOUNT / 2) || computerCount === Math.ceil(CELLS_AMOUNT / 2)){
+      this.props.gameOver((userCount > computerCount) ? 'user' : 'computer');
+    }
   }
 
   render() {
-    if(this.props.gameStarted){
+    const { gameStarted, gameEnded, winners } = this.props;
+
+    if(gameStarted){
       this.chooseNextCell();
     }
 
@@ -91,6 +100,7 @@ class ConnectedGame extends PureComponent{
     return (
       <div className="game-wrapper__game">
         <Settings />
+        <p className={`game-wrapper__game-message ${(!gameEnded) ? 'element-invisible' : '' }`}>{gameEnded ? (winners[0].user + ' Win') : '-'}</p>
         <div className="game-wrapper__game-field" onClick={(event) => this.handleClick(event)} >
           {cells}
         </div>
